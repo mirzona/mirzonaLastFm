@@ -1,16 +1,17 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import BoxText from './BoxText';
 
 const ArtistItem = (props) => (
-      <View>
+
+      <BoxText>
           <Text style={styles.textStyle} >{props.data.name}</Text>
-      </View>
+      </BoxText>
   );
 export default ArtistItem;
 const styles = StyleSheet.create({
     textStyle: {
-        fontSize: 20,
-        margin: 10,
-        paddingLeft: 20,
+        fontSize: 25,
+        paddingLeft: 10,
     }
 });

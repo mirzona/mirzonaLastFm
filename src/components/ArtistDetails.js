@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ViewPagerAndroid, StyleSheet, Image, } from 'react-native';
 import Axios from '../../node_modules/axios';
+import BoxText from './BoxText';
 
 export default class ArtistDetails extends Component {
     state= {
@@ -32,12 +33,12 @@ export default class ArtistDetails extends Component {
   render() {
     return (
         <ViewPagerAndroid style={styles.viewStyle} initialPage={0}>
-            <View style={styles.viewStyle} key='1' >
+            <View style={styles.viewStyle} key='1'>
                 <Text style={styles.captionStyle}> {this.state.name} </Text>
                 <Image source={{ uri: this.state.uriImage }} style={{ width: 250, height: 250 }} />
                 <Text style={styles.textStyle}> {this.state.artistGenre} </Text>
                 <Text style={styles.swipetStyle}> swipe for more >> </Text>
-            </View>         
+            </View>
             <View style={styles.viewStyle} key='2'>
                 <Text style={styles.textStyle}>
                     {this.state.bioText.substring(0, this.state.bioText.indexOf('<'))}
@@ -73,6 +74,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        color: 'white'
+        color: 'grey'
     }
 });

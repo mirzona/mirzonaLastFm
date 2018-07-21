@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import Axios from '../../node_modules/axios';
 import ArtistItem from './ArtistItem';
+import BoxHeader from './BoxHeader';
 
 export default class Artists extends Component {
   state={
@@ -39,9 +40,12 @@ export default class Artists extends Component {
   render() {
     return (
       <View style={styles.viewStyle}>
-        <Text style={styles.textStyle}>Top 50 artists from {this.state.countryName}
+      <BoxHeader>
+      <Text style={styles.textStyle}>Top 50 artists from {this.state.countryName}
         . Tap to find some details!
         </Text>
+      </BoxHeader>
+        
         <FlatList 
           data={this.state.data}
           renderItem={this.myRenderItem}
@@ -61,8 +65,8 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontSize: 25,
-        color: 'black',
         padding: 10,
-        margin: 20,
+        justifyContent: 'center',
+        // margin: 20,
     }
 });
