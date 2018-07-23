@@ -1,54 +1,74 @@
 import React, { Component } from 'react';
-import { View, Text, ViewPagerAndroid, StyleSheet, Image, } from 'react-native';
+import { View,
+         ScrollView,
+         Text, 
+         ViewPagerAndroid, 
+         StyleSheet, 
+         Image, 
+         Linking, 
+         TouchableOpacity, } from 'react-native';
 import Axios from '../../node_modules/axios';
-import BoxText from './BoxText';
+import { BoxText, BoxHeader } from './';
 
 export default class ArtistDetails extends Component {
-    state= {
+   state = {
         name: '',
         uriImagesArray: [],
         artistGenre: '',
         artistName: this.props.navigation.getParam('artistName', 'none'),
         bioText: '',
-    }
+        urlWebSite: '',
+      };
+
     componentDidMount() {
         this.getArtistDetails();
     }
-    getArtistDetails = () => (
+    getArtistDetails = () => {
         Axios.get(`http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.artistName}&api_key=1578beb2c1523bc37e494feca8a47421&format=json`)
             .then(response => {
-                console.log(response);
+                // const { artistData } = response.data.artist;
                 this.setState({
-                    name: response.data.artist.name,
+                    name: response.data.artist.name, 
                     uriImage: response.data.artist.image['2']['#text'],
                     artistGenre: response.data.artist.tags.tag['0'].name,
                     bioText: response.data.artist.bio.summary,
+                    urlWebSite: response.data.artist.url,
                 });
             })
             .catch(err => (
                 console.error(err)
-            ))
-            
-    );
+            )); 
+        };
+
   render() {
+    const { viewStyle, textStyle, captionStyle, swipeStyle, linkStyle } = styles;
+    const { name, uriImage, artistGenre, bioText, urlWebSite, } = this.state;
     return (
-        <ViewPagerAndroid style={styles.viewStyle} initialPage={0}>
-            <View style={styles.viewStyle} key='1'>
-                <Text style={styles.captionStyle}> {this.state.name} </Text>
-                <Image source={{ uri: this.state.uriImage }} style={{ width: 250, height: 250 }} />
-                <Text style={styles.textStyle}> {this.state.artistGenre} </Text>
-                <Text style={styles.swipetStyle}> swipe for more >> </Text>
+        <ViewPagerAndroid style={viewStyle} initialPage={0}>
+            <View style={viewStyle} key='1'>
+                    <BoxHeader>
+                        <Text style={captionStyle}> {name} </Text>
+                    </BoxHeader>
+                    <Image source={{ uri: uriImage }} style={{ width: 250, height: 250 }} />
+                    <Text style={textStyle}> {artistGenre} </Text>
+                    <Text style={swipeStyle}> swipe for more >> </Text>
             </View>
-            <View style={styles.viewStyle} key='2'>
-                <Text style={styles.textStyle}>
-                    {this.state.bioText.substring(0, this.state.bioText.indexOf('<'))}
+            <BoxText style={viewStyle} key='2'>
+                <ScrollView>
+                <Text style={textStyle}>
+                    {bioText.substring(0, bioText.indexOf('<'))}
                  </Text>
-            </View>                          
+                 <TouchableOpacity onPress={() => Linking.openURL(urlWebSite)}>
+                     <Text style={linkStyle} >...find more at Last.fm</Text>
+                 </TouchableOpacity>
+                </ScrollView>
+            </BoxText>                          
         </ViewPagerAndroid>
       
     );
   }
 }
+
 const styles = StyleSheet.create({
     viewStyle: {
         flex: 1,
@@ -58,7 +78,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     captionStyle: {
-        fontSize: 50,
+        fontSize: 20,
         color: 'red'
     },
     textStyle: {
@@ -68,12 +88,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    swipetStyle: {
+    swipeStyle: {
         padding: 5,
         fontSize: 20,
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
         color: 'grey'
+    },
+    linkStyle: {
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: 20,
     }
 });

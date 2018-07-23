@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import CountryItem from './CountryItem';
 import Axios from '../../node_modules/axios';
-import BoxHeader from './BoxHeader';
+import { BoxHeader, CountryItem } from './';
 
 export default class WelcomeScreen extends Component {
     state = {
@@ -11,30 +10,30 @@ export default class WelcomeScreen extends Component {
     componentDidMount() {
        this.getCountries();
     }
-    getCountries = () => Axios.get('https://restcountries.eu/rest/v2/all')
+    getCountries = () => Axios.get('http://countryapi.gear.host/v1/Country/getCountries')
             .then((response) => {
-                // console.log(response);
                 this.setState({
-                    data: response.data,
+                    data: response.data.Response,
                 });
             }
         )
             .catch(err => console.error(err));
-    myKeyExtractor = (item) => item.numericCode.toString();
+    myKeyExtractor = (item) => item.NumericCode.toString();
     myRenderItem = ({ item }) => (
             <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ArtistsRoute',
-                { countryName: item.name })}
+                { countryName: item.Name })}
             >
                 <CountryItem data={item} />
             </TouchableOpacity>
         );
   render() {
+      const { viewStyle, textStyle } = styles;
     return (
-      <View style={styles.viewStyle} >
+      <View style={viewStyle} >
             <BoxHeader>
-                <Text style={styles.textStyle}>
-                    Tap a country and you'll find a top 50 favorite music artists that people listen there!
+                <Text style={textStyle}>
+                    Chose a country and see 50 most listening music artists there!
                 </Text>
             </BoxHeader>
           <FlatList 
@@ -46,6 +45,7 @@ export default class WelcomeScreen extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
     viewStyle: {
         backgroundColor: '#d3ffce',
@@ -55,9 +55,8 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontSize: 20,
-        alignItems: 'center',
+        alignSelf: 'center',
         justifyContent: 'center',
         paddingLeft: 10,
-        // color: 'green'
     },
 });

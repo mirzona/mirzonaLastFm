@@ -1,17 +1,25 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
-import BoxText from './BoxText';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { BoxText } from './';
 
-const ArtistItem = (props) => (
+const ArtistItem = ({ data, navigation }) => {
+    const { name } = data;
+    const { textStyle } = styles;
+    return (
+        <TouchableOpacity
+            onPress={() => navigation.navigate('ArtistDetailsRoute', { artistName: name })}
+        >
+            <BoxText>
+                <Text style={textStyle} >{name}</Text>
+            </BoxText>
+        </TouchableOpacity> 
+    );  
+};
+export { ArtistItem };
 
-      <BoxText>
-          <Text style={styles.textStyle} >{props.data.name}</Text>
-      </BoxText>
-  );
-export default ArtistItem;
 const styles = StyleSheet.create({
     textStyle: {
-        fontSize: 25,
+        fontSize: 20,
         paddingLeft: 10,
     }
 });
