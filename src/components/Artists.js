@@ -2,26 +2,44 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import Axios from '../../node_modules/axios';
 import { BoxHeader, ArtistItem } from './';
+import { API_ARTISTS_PART_1, 
+         API_ARTISTS_PART_2, 
+         NO_INFO_ERROR_MSG, 
+         ARTISTS_CAPTION_PART_1_STRING, 
+         ARTISTS_CAPTION_PART_2_STRING } from './StringsFromApp';
 
 
 export default class Artists extends Component {
   state={
     data: [],
-    countryName: this.props.navigation.getParam('countryName', 'spain')
+    countryName: this.props.navigation.getParam('countryName', 'spain'),
+    errorMsg: ''
   }
   
   componentDidMount() {
     this.getTopArtists();
   }
   getTopArtists = () => {
-    Axios.get(`http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=${this.state.countryName}&api_key=1578beb2c1523bc37e494feca8a47421&format=json`)
+    const API_ARTISTS_STRING = API_ARTISTS_PART_1 + this.state.countryName + API_ARTISTS_PART_2;
+    Axios.get(API_ARTISTS_STRING)
       .then(response => {
-        this.setState({
-          data: response.data.topartists.artist, 
-        });
+        // console.log(response);
+        if (response.data.topartists['@attr'].total !== '0') {
+          this.setState({
+            data: response.data.topartists.artist, 
+          });
+        } else {
+          this.setState({
+            errorMsg: NO_INFO_ERROR_MSG
+          });
+          alert(NO_INFO_ERROR_MSG);
+          this.props.navigation.navigate('WelcomeRoute');
+        }
       })
       .catch(err => {
-        console.error(err);
+        console.log(err);
+        alert(NO_INFO_ERROR_MSG);
+        this.props.navigation.navigate('WelcomeRoute');
       });
   }
   myRenderItem = ({ item }) => (
@@ -31,15 +49,15 @@ export default class Artists extends Component {
   myKeyExtractor = (item) => item.mbid.toString();
 
   render() {
-    const { countryName, data } = this.state;
+    const { countryName, data, errorMsg } = this.state;
     const { textStyle, viewStyle, } = styles;
 
     return (
       <View style={viewStyle}>
         <BoxHeader>
           <Text style={textStyle}>
-            Top 50 artists from {countryName}. Tap to find
-            some details about them!
+            {ARTISTS_CAPTION_PART_1_STRING}{countryName}{ARTISTS_CAPTION_PART_2_STRING}
+            {errorMsg}
            </Text>
         </BoxHeader> 
         <FlatList 

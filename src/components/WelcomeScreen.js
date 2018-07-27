@@ -1,23 +1,39 @@
 import React, { Component } from 'react';
-import { View, FlatList, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet, Text, AsyncStorage } from 'react-native';
 import Axios from '../../node_modules/axios';
 import { BoxHeader, CountryItem } from './';
+import { API_COUNTRY_STRING, WELCOME_CAPTION_STRING } from './StringsFromApp';
 
 export default class WelcomeScreen extends Component {
     state = {
-        data: [],
+        data: []
     }
     componentDidMount() {
-       this.getCountries();
+        this.getCountries();
     }
-    getCountries = () => Axios.get('http://countryapi.gear.host/v1/Country/getCountries')
-            .then((response) => {
-                this.setState({
-                    data: response.data.Response,
-                });
-            }
-        )
-            .catch(err => console.error(err));
+    getCountries = async() => {
+        try {
+            const countries = JSON.parse(await AsyncStorage.getItem('countries'));
+            if (countries !== null) {
+                // console.log(countries);
+                this.setState({ data: countries.data.Response });
+            } else {
+                this.setCountries();
+            } 
+        } catch (error) {
+            console.error(error);
+        }
+   }
+      setCountries = () => {
+       Axios.get(API_COUNTRY_STRING)
+       .then((response) => {
+           this.setState({ data: response.data.Response });
+           AsyncStorage.setItem('countries', JSON.stringify(response));
+       })
+       .catch((err) => console.log(err));
+     };
+    
+   
     myKeyExtractor = (item) => item.NumericCode.toString();
     myRenderItem = ({ item }) => (
             <TouchableOpacity
@@ -33,7 +49,7 @@ export default class WelcomeScreen extends Component {
       <View style={viewStyle} >
             <BoxHeader>
                 <Text style={textStyle}>
-                    Chose a country and see 50 most listening music artists there!
+                    {WELCOME_CAPTION_STRING}
                 </Text>
             </BoxHeader>
           <FlatList 
