@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import Axios from '../../node_modules/axios';
 import { BoxHeader, ArtistItem } from './';
 import { API_ARTISTS_PART_1, 
@@ -32,16 +32,17 @@ export default class Artists extends Component {
           this.setState({
             errorMsg: NO_INFO_ERROR_MSG
           });
-          alert(NO_INFO_ERROR_MSG);
+          Alert.alert(NO_INFO_ERROR_MSG);
           this.props.navigation.navigate('WelcomeRoute');
         }
       })
       .catch(err => {
         console.log(err);
-        alert(NO_INFO_ERROR_MSG);
+        Alert.alert(NO_INFO_ERROR_MSG);
         this.props.navigation.navigate('WelcomeRoute');
       });
   }
+ 
   myRenderItem = ({ item }) => (
       <ArtistItem data={item} navigation={this.props.navigation} />
     );
