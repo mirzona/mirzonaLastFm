@@ -1,5 +1,7 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "sdkVersion": "37.0.0",
+    "name": "mirzonaLastFM",
+    "slug": "lastFM"
   }
 }
