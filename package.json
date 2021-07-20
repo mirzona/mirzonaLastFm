@@ -23,7 +23,7 @@
     "axios": "^0.21.1",
     "expo": "^37.0.0",
     "react": "16.9.0",
-    "react-native": "0.61",
+    "react-native": "0.62",
     "react-native-svg-uri": "^1.2.3",
     "react-navigation": "^2.7.0"
   }
